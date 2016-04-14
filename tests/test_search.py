@@ -25,6 +25,7 @@ def test_search_hulk():
     assert response.facet('char_name').node_('Hulk').items == 1
 
     # Idem with contents
+    assert len(response.contents) == 10
     assert response.contents[0].docId == 623
     assert response.contents[0].uri == '1009351'
     assert response.contents[0].title[0].match == 'Hulk'
