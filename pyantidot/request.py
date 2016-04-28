@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 import requests
 
 from pyantidot.response import Response
+from pyantidot.tools import Bunch
 
 
 class Request(object):
@@ -33,7 +34,7 @@ class Request(object):
         url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
 
         response = requests.get(url)
-        return Response(response.json())
+        return Response(Bunch(response.json()))
 
 
 class SearchRequest(Request):
