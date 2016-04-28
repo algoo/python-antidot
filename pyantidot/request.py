@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from siesta import API
+from urllib.parse import urlencode
+import requests
 
 from pyantidot.response import Response
 
@@ -7,17 +8,18 @@ from pyantidot.response import Response
 class Request(object):
     _web_service_name = NotImplemented
     _defaults = {}
+    _protocol = 'https'
     _forced = {
         'output': 'json,3'
     }
 
     def __init__(self, url, service):
-        self._api = API('https://{0}'.format(url))
+        self._api_address = '{0}://{1}'.format(self._protocol, url)
         self._service = service
 
     @property
-    def service(self):
-        return getattr(self._api, self._web_service_name)
+    def service_address(self):
+        return '{0}/{1}'.format(self._api_address, self._web_service_name)
 
     def get(self, **kwargs):
         parameters = self._defaults
@@ -26,9 +28,12 @@ class Request(object):
             'service': self._service
         })
         parameters.update(self._forced)
-        parameters = {'afs:{0}'.format(key): value for key, value in parameters.items()}
-        api_response = self.service.get(**parameters)
-        return Response(api_response[0].attrs)
+        parameters = [('afs:{0}'.format(key), value) for key, value in parameters.items()]
+
+        url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
+
+        response = requests.get(url)
+        return Response(response.json())
 
 
 class SearchRequest(Request):
