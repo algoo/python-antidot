@@ -1,4 +1,5 @@
 from pyantidot.exception import NotFoundException
+from pyantidot.helpers import high_light
 from pyantidot.tools import Bunch
 
 
@@ -22,6 +23,14 @@ class HighLightText(BunchContainer):
         return self._bunch.text
 
 
+class HighLightTextList(list):
+    def __str__(self) -> str:
+        return ' '.join(map(str, self))
+
+    def get_highlight_text(self, surround) -> str:
+        return high_light(self, surround)
+
+
 class Content(BunchContainer):
     @property
     def doc_id(self) -> int:
@@ -32,12 +41,12 @@ class Content(BunchContainer):
         return self._bunch.uri
 
     @property
-    def title(self) -> [HighLightText]:
-        return [HighLightText(bunch) for bunch in self._bunch.title]
+    def title(self) -> HighLightTextList:
+        return HighLightTextList([HighLightText(bunch) for bunch in self._bunch.title])
 
     @property
-    def abstract(self) -> [HighLightText]:
-        return [HighLightText(bunch) for bunch in self._bunch.abstract]
+    def abstract(self) -> HighLightTextList:
+        return HighLightTextList([HighLightText(bunch) for bunch in self._bunch.abstract])
 
     @property
     def relevance(self) -> Bunch:

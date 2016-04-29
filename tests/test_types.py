@@ -56,11 +56,11 @@ def test_search_types():
 
     assert type(content.doc_id) is int
     assert type(content.uri) is str
-    assert type(content.title) is list
+    assert type(content.title) is HighLightTextList
     assert type(content.title[0]) is HighLightText
     assert type(content.title[0].is_match) is bool
     assert type(str(content.title[0])) is str
-    assert type(content.abstract) is list
+    assert type(content.abstract) is HighLightTextList
     assert type(content.abstract[0]) is HighLightText
     assert type(str(content.abstract[0])) is str
     assert type(content.relevance) is Bunch
