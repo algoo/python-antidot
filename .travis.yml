@@ -5,3 +5,4 @@ install:
   - cd python-antidot && pip install -r requirements.txt
 
 script: "cd ${TRAVIS_BUILD_DIR} && python -m nose
+
