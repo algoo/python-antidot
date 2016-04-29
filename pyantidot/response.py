@@ -7,25 +7,84 @@ class BunchContainer(object):
         self._bunch = bunch
 
 
-class ReplySetFacets(BunchContainer):
+class Pager(BunchContainer):
     pass
+
+
+class HighLightText(BunchContainer):
+    @property
+    def is_match(self) -> bool:
+        return 'match' in self._bunch and 'text' not in self._bunch
+
+    def __str__(self) -> str:
+        if 'match' in self._bunch:
+            return self._bunch.match
+        return self._bunch.text
 
 
 class Content(BunchContainer):
-    pass
+    @property
+    def doc_id(self) -> int:
+        return int(self._bunch.docId)
+
+    @property
+    def uri(self) -> str:
+        return self._bunch.uri
+
+    @property
+    def title(self) -> [HighLightText]:
+        return [HighLightText(bunch) for bunch in self._bunch.title]
+
+    @property
+    def abstract(self) -> [HighLightText]:
+        return [HighLightText(bunch) for bunch in self._bunch.abstract]
+
+    @property
+    def relevance(self) -> Bunch:
+        return self._bunch.relevance
+
+    @property
+    def client_data(self) -> [Bunch]:
+        return [bunch for bunch in self._bunch.clientData]
+
+
+class ReplySetNode(BunchContainer):
+    @property
+    def key(self) -> object:
+        return self._bunch.key
+
+    @property
+    def labels(self) -> [Bunch]:
+        return [label for label in self._bunch.labels]
+
+    @property
+    def items(self) -> int:
+        return int(self._bunch['items'])  # We can't use self._bunch.items function here, Bunch.items is a function
 
 
 class ReplySetFacet(BunchContainer):
-    pass
+    @property
+    def nodes(self) -> [ReplySetNode]:
+        return [ReplySetNode(node) for node in self._bunch.node]
+
+    @property
+    def pager(self) -> Pager:
+        return Pager(self._bunch.pager)
+
+    @property
+    def labels(self) -> [Bunch]:
+        return [label for label in self._bunch.labels]
+
+    def node(self, key: object) -> ReplySetNode:
+        for node_bunch in self._bunch.node:
+            if node_bunch.key == key:
+                return ReplySetNode(node_bunch)
+        raise NotFoundException()
 
 
 class ReplySet(BunchContainer):
     @property
-    def facets(self) -> ReplySetFacets:
-        return self._bunch.facets
-
-    @property
-    def contents(self) -> list:
+    def contents(self) -> [Content]:
         return [Content(bunch) for bunch in self._bunch.content.reply]
 
     @property
@@ -33,11 +92,11 @@ class ReplySet(BunchContainer):
         return self._bunch.meta
 
     @property
-    def pager_bunch(self) -> Bunch:
-        return self._bunch.pager
+    def pager(self) -> Pager:
+        return Pager(self._bunch.pager)
 
     @property
-    def facets(self) -> list:
+    def facets(self) -> [ReplySetFacet]:
         return [ReplySetFacet(bunch) for bunch in self._bunch.facets.facet]
 
     def content(self, uri: object) -> Content:
@@ -85,49 +144,3 @@ class Response(BunchContainer):
             if reply_set_bunch.meta.uri == uri:
                 return ReplySet(reply_set_bunch)
         raise NotFoundException()
-
-
-#     @property
-#     def facets(self):
-#         return Facets(self.replySet[0].facets.facet)
-#
-#     @property
-#     def contents(self):
-#         return [Content(reply) for reply in self.replySet[0].content.reply]
-#
-#     def facet(self, facet_id):
-#         for facet in self.facets:
-#             if facet.id == facet_id:
-#                 return FacetTree(facet)
-#         raise NotFoundException('facet "{0}" not found in response'.format(facet_id))
-#
-#
-#
-# class FacetTree(Bunch):
-#     @property
-#     def nodes(self):
-#         return [FacetNode(node) for node in self.node]
-#
-#     def node_(self, key):
-#         for node in self.nodes:
-#             if node.key == key:
-#                 return FacetNode(node)
-#         raise NotFoundException('FacetNode not found for key "{0}"'.format(key))
-#
-#
-# class FacetNode(Bunch):
-#     def label(self, lang):
-#         for label in self.labels:
-#             if label.lang == lang:
-#                 return label.label
-#         raise NotFoundException('Lang "{0}" not found for FacetNode "{1}, langs availables: {2}'
-#                                 .format(lang, self.key, 'TODO'))
-#
-#     @property
-#     def items(self):
-#         """ Override of dict .items() method """
-#         return self['items']
-#
-#
-# class Content(Bunch):
-#     pass
