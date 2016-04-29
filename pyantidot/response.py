@@ -73,6 +73,18 @@ class ReplySetNode(BunchContainer):
 
 class ReplySetFacet(BunchContainer):
     @property
+    def layout(self) -> str:
+        return self._bunch.layout
+
+    @property
+    def type(self) -> str:
+        return self._bunch.type
+
+    @property
+    def id(self) -> int:
+        return self._bunch.id
+
+    @property
     def nodes(self) -> [ReplySetNode]:
         return [ReplySetNode(node) for node in self._bunch.node]
 

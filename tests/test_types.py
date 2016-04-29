@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from pyantidot.request import SearchRequest
+from pyantidot.response import HighLightTextList
 from pyantidot.response import Response
-from pyantidot.request import Header
-from pyantidot.request import ReplySet
-from pyantidot.request import Content
-from pyantidot.request import ReplySetFacet
-from pyantidot.request import Pager
-from pyantidot.request import ReplySetNode
-from pyantidot.request import HighLightText
+from pyantidot.response import Header
+from pyantidot.response import ReplySet
+from pyantidot.response import Content
+from pyantidot.response import ReplySetFacet
+from pyantidot.response import Pager
+from pyantidot.response import ReplySetNode
+from pyantidot.response import HighLightText
 from pyantidot.tools import Bunch
 
 
