@@ -3,6 +3,9 @@ python: "3.4"
 
 install:
   - "cd ${TRAVIS_BUILD_DIR} && pip install -r requirements.txt"
+  - "pip install coveralls"
 
-script: "cd ${TRAVIS_BUILD_DIR} && python -m nose"
+script: "cd ${TRAVIS_BUILD_DIR} && python -m nose -v --with-coverage --cover-package=pyantidot --cover-erase"
 
+after_success:
+- coveralls
