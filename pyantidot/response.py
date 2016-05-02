@@ -11,6 +11,20 @@ class BunchContainer(object):
         return self._bunch
 
 
+class Labels(object):
+    def __init__(self, labels: [dict]):
+        self._labels = labels
+
+    def get(self, lang: str):
+        for label_bunch in self._labels:
+            if label_bunch.lang == lang:
+                return label_bunch.label
+        raise NotFoundException()
+
+    def all(self) -> [dict]:
+        return self._labels
+
+
 class Pager(BunchContainer):
     @property
     def current_page(self) -> int:
@@ -82,8 +96,8 @@ class ReplySetNode(BunchContainer):
         return self._bunch.key
 
     @property
-    def labels(self) -> [Bunch]:
-        return [label for label in self._bunch.labels]
+    def labels(self) -> Labels:
+        return Labels([label for label in self._bunch.labels])
 
     @property
     def items(self) -> int:
@@ -112,8 +126,8 @@ class ReplySetFacet(BunchContainer):
         return Pager(self._bunch.pager)
 
     @property
-    def labels(self) -> [Bunch]:
-        return [label for label in self._bunch.labels]
+    def labels(self) -> Labels:
+        return Labels([label for label in self._bunch.labels])
 
     def node(self, key: object) -> ReplySetNode:
         for node_bunch in self._bunch.node:
