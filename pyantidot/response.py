@@ -30,9 +30,15 @@ class HighLightText(BunchContainer):
     def is_match(self) -> bool:
         return 'match' in self._bunch and 'text' not in self._bunch
 
+    @property
+    def is_truncate(self) -> bool:
+        return 'afs:t' in self._bunch and self._bunch['afs:t'] == 'KwicTruncate'
+
     def __str__(self) -> str:
-        if 'match' in self._bunch:
+        if self.is_match:
             return self._bunch.match
+        if self.is_truncate:
+            return '...'  # TODO: permettre de personaliser
         return self._bunch.text
 
 
