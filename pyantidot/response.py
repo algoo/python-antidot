@@ -159,9 +159,16 @@ class ReplySet(BunchContainer):
                 return Content(content_bunch)
         raise NotFoundException()
 
-    def facet(self, id: object) -> ReplySetFacet:
+    def have_facet(self, id_: object) -> bool:
+        try:
+            self.facet(id_)
+            return True
+        except NotFoundException:
+            return False
+
+    def facet(self, id_: object) -> ReplySetFacet:
         for facet in self._bunch.facets.facet:
-            if facet.id == id:
+            if facet.id == id_:
                 return ReplySetFacet(facet)
         raise NotFoundException()
 
