@@ -10,18 +10,17 @@ from pyantidot.tools import Bunch
 class Request(object):
     _web_service_name = NotImplemented
     _defaults = {}
-    _protocol = 'https'
     _forced = {
         'output': 'json,3'
     }
 
     def __init__(self, url, service):
-        self._api_address = '{0}://{1}'.format(self._protocol, url)
+        self._url = url
         self._service = service
 
     @property
     def service_address(self):
-        return '{0}/{1}'.format(self._api_address, self._web_service_name)
+        return '{0}/{1}'.format(self._url, self._web_service_name)
 
     def get(self, parameters: MultiDict):
         parameters.update(self._defaults)
