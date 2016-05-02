@@ -177,10 +177,16 @@ class Response(BunchContainer):
 
     @property
     def replies(self) -> list:
+        if 'replySet' not in self._bunch:
+            return []
         return [ReplySet(bunch) for bunch in self._bunch.replySet]
 
     def reply(self, uri: object) -> ReplySet:
+        if 'replySet' not in self._bunch:
+            raise NotFoundException()
+
         for reply_set_bunch in self._bunch.replySet:
             if reply_set_bunch.meta.uri == uri:
                 return ReplySet(reply_set_bunch)
+
         raise NotFoundException()
