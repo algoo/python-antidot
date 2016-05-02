@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from werkzeug.datastructures import MultiDict
+
 from pyantidot.request import SearchRequest
 from pyantidot.response import HighLightTextList
 from pyantidot.response import Response
@@ -14,8 +16,11 @@ from pyantidot.tools import Bunch
 
 def test_search_types():
     # http://training-dev.afs-antidot.net/search?afs:service=2&afs:feed=MARVEL_CHARACTERS&afs:query=hulk
-    search = SearchRequest('training-dev.afs-antidot.net', service=2)
-    response = search.get(feed='MARVEL_CHARACTERS', query='hulk')
+    search = SearchRequest('http://training-dev.afs-antidot.net', service=2)
+    response = search.get(MultiDict((
+        ('feed', 'MARVEL_CHARACTERS'),
+        ('query', 'hulk'),
+    )))
 
     assert type(response) is Response
 

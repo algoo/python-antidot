@@ -1,12 +1,16 @@
 from nose.tools import eq_
+from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest
 
 
 def test_search_hulk():
     # http://training-dev.afs-antidot.net/search?afs:service=2&afs:feed=MARVEL_CHARACTERS&afs:query=hulk
-    search = SearchRequest('training-dev.afs-antidot.net', service=2)
-    response = search.get(feed='MARVEL_CHARACTERS', query='hulk')
+    search = SearchRequest('https://training-dev.afs-antidot.net', service=2)
+    response = search.get(MultiDict((
+        ('feed', 'MARVEL_CHARACTERS'),
+        ('query', 'hulk'),
+    )))
 
     eq_(len(response.replies), 1, 'One reply set in response')
 

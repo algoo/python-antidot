@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from urllib.parse import urlencode
 import requests
+from werkzeug.datastructures import MultiDict
 
 from pyantidot.response import Response
 from pyantidot.tools import Bunch
@@ -22,14 +23,13 @@ class Request(object):
     def service_address(self):
         return '{0}/{1}'.format(self._api_address, self._web_service_name)
 
-    def get(self, **kwargs):
-        parameters = self._defaults
-        parameters.update(kwargs)
+    def get(self, parameters: MultiDict):
+        parameters.update(self._defaults)
         parameters.update({
             'service': self._service
         })
         parameters.update(self._forced)
-        parameters = [('afs:{0}'.format(key), value) for key, value in parameters.items()]
+        parameters = [('afs:{0}'.format(key), value) for key, value in parameters.items(True)]
 
         url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
 
