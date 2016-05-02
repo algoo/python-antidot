@@ -7,9 +7,22 @@ class BunchContainer(object):
     def __init__(self, bunch: Bunch):
         self._bunch = bunch
 
+    def get_raw(self):
+        return self._bunch
+
 
 class Pager(BunchContainer):
-    pass
+    @property
+    def current_page(self) -> int:
+        return int(self._bunch.currentPage)
+
+    @property
+    def new_page(self):
+        return int(self._bunch.currentPage)
+
+    @property
+    def pages(self) -> [int]:
+        return self._bunch.page
 
 
 class HighLightText(BunchContainer):
