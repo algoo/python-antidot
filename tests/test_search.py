@@ -27,6 +27,8 @@ def test_search_hulk():
     eq_(facet.type, 'STRING', 'Facet type is "STRING" but got {}'.format(facet.type))
     eq_(facet.labels[0].label, 'Character name',
         'First facet label is "Character name" but got {}'.format(facet.labels[0].label))
+    eq_(facet.labels.get('FR'), 'Character name',
+        'First facet label is "Character name" but got {}'.format(facet.labels[0].label))
     eq_(len(facet.nodes), 10, 'Facet contains 10 nodes but got {}'.format(len(facet.nodes)))
 
     # Facet node

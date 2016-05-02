@@ -3,6 +3,7 @@ from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest
 from pyantidot.response import HighLightTextList
+from pyantidot.response import Labels
 from pyantidot.response import Response
 from pyantidot.response import Header
 from pyantidot.response import ReplySet
@@ -16,7 +17,7 @@ from pyantidot.tools import Bunch
 
 def test_search_types():
     # http://training-dev.afs-antidot.net/search?afs:service=2&afs:feed=MARVEL_CHARACTERS&afs:query=hulk
-    search = SearchRequest('http://training-dev.afs-antidot.net', service=2)
+    search = SearchRequest('https://training-dev.afs-antidot.net', service=2)
     response = search.get(MultiDict((
         ('feed', 'MARVEL_CHARACTERS'),
         ('query', 'hulk'),
@@ -51,13 +52,13 @@ def test_search_types():
     assert type(char_name_facet.nodes) is list
     assert type(char_name_facet.nodes[0]) is ReplySetNode
     assert type(char_name_facet.node('A-Bomb (HAS)')) is ReplySetNode
-    assert type(char_name_facet.labels) is list
+    assert type(char_name_facet.labels) is Labels
     assert type(char_name_facet.labels[0]) is Bunch
     reply_set_node = char_name_facet.node('A-Bomb (HAS)')
 
     assert isinstance(reply_set_node.key, (str, int))
     assert type(reply_set_node.items) is int
-    assert type(reply_set_node.labels) is list
+    assert type(reply_set_node.labels) is Labels
     assert type(reply_set_node.labels[0]) is Bunch
 
     assert type(content.doc_id) is int

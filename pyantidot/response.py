@@ -11,18 +11,15 @@ class BunchContainer(object):
         return self._bunch
 
 
-class Labels(object):
-    def __init__(self, labels: [dict]):
-        self._labels = labels
-
+class Labels(list):
     def get(self, lang: str):
-        for label_bunch in self._labels:
+        for label_bunch in iter(self):
             if label_bunch.lang == lang:
                 return label_bunch.label
         raise NotFoundException()
 
     def all(self) -> [dict]:
-        return self._labels
+        return iter(self)
 
 
 class Pager(BunchContainer):
