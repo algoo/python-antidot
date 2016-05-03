@@ -12,3 +12,8 @@ class Bunch(BaseBunch):
                 if type(list_item) is dict:
                     value[key] = Bunch(list_item)
         return value
+
+
+@property
+def NotImplementedAttribute(self):
+    raise NotImplementedError()

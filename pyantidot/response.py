@@ -200,7 +200,7 @@ class Header(BunchContainer):
         return self._bunch.info
 
 
-class Response(BunchContainer):
+class SearchResponse(BunchContainer):
     @property
     def header(self) -> Header:
         return Header(self._bunch.header)
@@ -219,4 +219,66 @@ class Response(BunchContainer):
             if reply_set_bunch.meta.uri == uri:
                 return ReplySet(reply_set_bunch)
 
+        raise NotFoundException()
+
+
+class ACPReply(object):
+    def __init__(self, index, label, reply_set):
+        self._index = index
+        self._label = label
+        self._reply_set = reply_set
+
+    @property
+    def label(self):
+        return self._label
+
+    @property
+    def options_bunch(self):
+        try:
+            return Bunch(self._reply_set.get_raw()[2][self._index])
+        except IndexError:
+            return Bunch({})
+
+
+class ACPReplySet(object):
+    def __init__(self, name, bunch):
+        self._bunch = bunch
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def query(self):
+        return self._bunch[0]
+
+    @property
+    def replies(self) -> [ACPReply]:
+        try:
+            return [
+                ACPReply(index, label, self)
+                for index, label
+                in enumerate(self._bunch[1])
+            ]
+        except IndexError:
+            return []
+
+    def get_raw(self):
+        return self._bunch
+
+
+class ACPResponse(BunchContainer):
+    @property
+    def replies_sets(self) -> list:
+        return [
+            ACPReplySet(name, bunch)
+            for name, bunch
+            in self._bunch.items()
+        ]
+
+    def reply_set(self, name: str) -> ReplySet:
+        for key, bunch in self._bunch.items():
+            if key == name:
+                return ACPReplySet(name, bunch)
         raise NotFoundException()

@@ -3,16 +3,15 @@ from urllib.parse import urlencode
 import requests
 from werkzeug.datastructures import MultiDict
 
-from pyantidot.response import Response
-from pyantidot.tools import Bunch
+from pyantidot.response import SearchResponse, ACPResponse
+from pyantidot.tools import Bunch, NotImplementedAttribute
 
 
 class Request(object):
-    _web_service_name = NotImplemented
+    _web_service_name = NotImplementedAttribute
+    _response_class = NotImplementedAttribute
     _defaults = {}
-    _forced = {
-        'output': 'json,3'
-    }
+    _forced = {}
 
     def __init__(self, url, service):
         self._url = url
@@ -33,8 +32,17 @@ class Request(object):
         url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
 
         response = requests.get(url)
-        return Response(Bunch(response.json()))
+        return self._response_class(Bunch(response.json()))
 
 
 class SearchRequest(Request):
+    _response_class = SearchResponse
     _web_service_name = 'search'
+    _forced = {
+        'output': 'json,3'
+    }
+
+
+class ACPRequest(Request):
+    _response_class = ACPResponse
+    _web_service_name = 'acp'

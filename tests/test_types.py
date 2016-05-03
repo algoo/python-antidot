@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from werkzeug.datastructures import MultiDict
 
-from pyantidot.request import SearchRequest
-from pyantidot.response import HighlightTextList
+from pyantidot.request import SearchRequest, ACPRequest
+from pyantidot.response import HighlightTextList, ACPResponse, ACPReplySet, \
+    ACPReply
 from pyantidot.response import Labels
-from pyantidot.response import Response
+from pyantidot.response import SearchResponse
 from pyantidot.response import Header
 from pyantidot.response import ReplySet
 from pyantidot.response import Content
@@ -23,7 +24,7 @@ def test_search_types():
         ('query', 'hulk'),
     )))
 
-    assert type(response) is Response
+    assert type(response) is SearchResponse
 
     assert type(response.header) is Header
     assert type(response.header.query_bunch) is Bunch
@@ -73,3 +74,27 @@ def test_search_types():
     assert type(content.relevance) is Bunch
     assert type(content.client_data) is list
     assert type(content.client_data[0]) is Bunch
+
+
+def test_acp_types():
+    # http://training-dev.afs-antidot.net/acp?afs:service=2&afs:query=hul
+    acp = ACPRequest('https://training-dev.afs-antidot.net', service=2)
+    response = acp.get(MultiDict((
+        ('query', 'hul'),
+    )))
+
+    assert type(response) is ACPResponse
+    assert type(response.replies_sets) is list
+    assert type(response.replies_sets[0]) is ACPReplySet
+    assert type(response.reply_set('name')) is ACPReplySet
+    reply_set = response.reply_set('name')
+
+    assert type(reply_set.query) is str
+    assert type(reply_set.name) is str
+    assert type(reply_set.replies) is list
+    assert type(reply_set.replies[0]) is ACPReply
+    reply = reply_set.replies[0]
+
+    assert type(reply.label) is str
+    assert type(reply.options_bunch) is Bunch
+    assert type(reply.options_bunch.thumbnail) is str

@@ -4,7 +4,7 @@ import re
 from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest
-from pyantidot.response import Response
+from pyantidot.response import SearchResponse
 
 
 class Manager(object):
@@ -16,7 +16,7 @@ class Manager(object):
         builder = QueryParametersBuilder(bind)
         return builder.build(parameters)
 
-    def search(self, parameters: MultiDict = None, **kwargs) -> Response:
+    def search(self, parameters: MultiDict = None, **kwargs) -> SearchResponse:
         parameters.update(kwargs)
         return self._search_request.get(parameters)
 
