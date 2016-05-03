@@ -28,8 +28,8 @@ class Pager(BunchContainer):
         return int(self._bunch.currentPage)
 
     @property
-    def new_page(self):
-        return int(self._bunch.currentPage)
+    def next_page(self):
+        return int(self._bunch.nextPage)
 
     @property
     def pages(self) -> [int]:
