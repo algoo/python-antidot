@@ -120,6 +120,12 @@ class ReplySetFacet(BunchContainer):
 
     @property
     def pager(self) -> Pager:
+        if 'pager' not in self._bunch:
+            return Pager(Bunch({
+                'currentPage': 0,
+                'nextPage': 0,
+                'pages': []
+            }))
         return Pager(self._bunch.pager)
 
     @property
@@ -144,6 +150,12 @@ class ReplySet(BunchContainer):
 
     @property
     def pager(self) -> Pager:
+        if 'pager' not in self._bunch:
+            return Pager(Bunch({
+                'currentPage': 0,
+                'nextPage': 0,
+                'pages': []
+            }))
         return Pager(self._bunch.pager)
 
     @property
