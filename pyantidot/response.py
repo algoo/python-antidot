@@ -36,7 +36,7 @@ class Pager(BunchContainer):
         return self._bunch.page
 
 
-class HighLightText(BunchContainer):
+class HighlightText(BunchContainer):
     @property
     def is_match(self) -> bool:
         return 'match' in self._bunch and 'text' not in self._bunch
@@ -53,7 +53,7 @@ class HighLightText(BunchContainer):
         return self._bunch.text
 
 
-class HighLightTextList(list):
+class HighlightTextList(list):
     def __str__(self) -> str:
         return ' '.join(map(str, self))
 
@@ -71,12 +71,12 @@ class Content(BunchContainer):
         return self._bunch.uri
 
     @property
-    def title(self) -> HighLightTextList:
-        return HighLightTextList([HighLightText(bunch) for bunch in self._bunch.title])
+    def title(self) -> HighlightTextList:
+        return HighlightTextList([HighlightText(bunch) for bunch in self._bunch.title])
 
     @property
-    def abstract(self) -> HighLightTextList:
-        return HighLightTextList([HighLightText(bunch) for bunch in self._bunch.abstract])
+    def abstract(self) -> HighlightTextList:
+        return HighlightTextList([HighlightText(bunch) for bunch in self._bunch.abstract])
 
     @property
     def relevance(self) -> Bunch:

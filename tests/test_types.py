@@ -2,7 +2,7 @@
 from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest
-from pyantidot.response import HighLightTextList
+from pyantidot.response import HighlightTextList
 from pyantidot.response import Labels
 from pyantidot.response import Response
 from pyantidot.response import Header
@@ -11,7 +11,7 @@ from pyantidot.response import Content
 from pyantidot.response import ReplySetFacet
 from pyantidot.response import Pager
 from pyantidot.response import ReplySetNode
-from pyantidot.response import HighLightText
+from pyantidot.response import HighlightText
 from pyantidot.tools import Bunch
 
 
@@ -63,12 +63,12 @@ def test_search_types():
 
     assert type(content.doc_id) is int
     assert type(content.uri) is str
-    assert type(content.title) is HighLightTextList
-    assert type(content.title[0]) is HighLightText
+    assert type(content.title) is HighlightTextList
+    assert type(content.title[0]) is HighlightText
     assert type(content.title[0].is_match) is bool
     assert type(str(content.title[0])) is str
-    assert type(content.abstract) is HighLightTextList
-    assert type(content.abstract[0]) is HighLightText
+    assert type(content.abstract) is HighlightTextList
+    assert type(content.abstract[0]) is HighlightText
     assert type(str(content.abstract[0])) is str
     assert type(content.relevance) is Bunch
     assert type(content.client_data) is list
