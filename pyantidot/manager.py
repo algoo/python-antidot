@@ -33,10 +33,10 @@ class QueryParametersBuilder(object):
 
         return query_parameters
 
-    def _get_bound_parameters(self, parameters: dict):
+    def _get_bound_parameters(self, parameters: MultiDict):
         for search_param_name, search_param_convert in self._bind.items():
             search_param_convert_name, search_param_convert_value = search_param_convert
-            for parameter_name, parameter_value in list(parameters.items()):
+            for parameter_name, parameter_value in list(parameters.items(True)):
                 matches = re.search(search_param_name, parameter_name)
                 if matches is not None:
                     if not matches.groups():  # expression matches but no groups defined
