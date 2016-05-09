@@ -239,6 +239,9 @@ class ACPReply(object):
         except IndexError:
             return Bunch({})
 
+    def __str__(self):
+        return self.label
+
 
 class ACPReplySet(object):
     def __init__(self, name, bunch):
@@ -251,7 +254,10 @@ class ACPReplySet(object):
 
     @property
     def query(self):
-        return self._bunch[0]
+        try:
+            return self._bunch[0]
+        except IndexError:
+            return None
 
     @property
     def replies(self) -> [ACPReply]:
@@ -261,7 +267,7 @@ class ACPReplySet(object):
                 for index, label
                 in enumerate(self._bunch[1])
             ]
-        except IndexError:
+        except KeyError:
             return []
 
     def get_raw(self):
@@ -277,8 +283,12 @@ class ACPResponse(BunchContainer):
             in self._bunch.items()
         ]
 
-    def reply_set(self, name: str) -> ReplySet:
+    def reply_set(self, name: str, raise_: bool=True) -> ReplySet:
         for key, bunch in self._bunch.items():
             if key == name:
                 return ACPReplySet(name, bunch)
-        raise NotFoundException()
+
+        if raise_:
+            raise NotFoundException()
+
+        return ACPReplySet(name, Bunch([]))

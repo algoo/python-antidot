@@ -4,14 +4,18 @@ import re
 from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest
+from pyantidot.request import ACPRequest
+from pyantidot.request import ACPResponse
 from pyantidot.response import SearchResponse
 
 
 class Manager(object):
     def __init__(self, api_url: str, service: int):
         self._search_request = SearchRequest(api_url, service=service)
+        self._acp_request = ACPRequest(api_url, service=service)
 
-    def collect_query_parameters(self, parameters: MultiDict,
+    @staticmethod
+    def collect_query_parameters(parameters: MultiDict,
                                  bind: dict = None) -> MultiDict:
         builder = QueryParametersBuilder(bind)
         return builder.build(parameters)
@@ -19,6 +23,10 @@ class Manager(object):
     def search(self, parameters: MultiDict = None, **kwargs) -> SearchResponse:
         parameters.update(kwargs)
         return self._search_request.get(parameters)
+
+    def acp(self, parameters: MultiDict = None, **kwargs) -> ACPResponse:
+        parameters.update(kwargs)
+        return self._acp_request.get(parameters)
 
 
 class QueryParametersBuilder(object):

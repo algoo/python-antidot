@@ -2,8 +2,10 @@
 from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest, ACPRequest
-from pyantidot.response import HighlightTextList, ACPResponse, ACPReplySet, \
-    ACPReply
+from pyantidot.response import HighlightTextList
+from pyantidot.response import ACPResponse
+from pyantidot.response import ACPReplySet
+from pyantidot.response import ACPReply
 from pyantidot.response import Labels
 from pyantidot.response import SearchResponse
 from pyantidot.response import Header

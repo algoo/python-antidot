@@ -32,7 +32,12 @@ class Request(object):
         url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
 
         response = requests.get(url)
-        return self._response_class(Bunch(response.json()))
+        try:
+            return self._response_class(Bunch(response.json()))
+        except ValueError:
+            # When json response is tiny (or ?) like '["hell",[]]' Bunch can't
+            # be construct
+            return self._response_class(Bunch({}))
 
 
 class SearchRequest(Request):
