@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from nose.tools import eq_
+from nose.tools import ok_
 from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import SearchRequest, ACPRequest
@@ -26,56 +28,56 @@ def test_search_types():
         ('query', 'hulk'),
     )))
 
-    assert type(response) is SearchResponse
+    eq_(type(response), SearchResponse)
 
-    assert type(response.header) is Header
-    assert type(response.header.query_bunch) is Bunch
-    assert type(response.header.user_bunch) is Bunch
-    assert type(response.header.performance_bunch) is Bunch
-    assert type(response.header.info_bunch) is Bunch
+    eq_(type(response.header), Header)
+    eq_(type(response.header.query_bunch), Bunch)
+    eq_(type(response.header.user_bunch), Bunch)
+    eq_(type(response.header.performance_bunch), Bunch)
+    eq_(type(response.header.info_bunch), Bunch)
 
-    assert type(response.replies) is list
-    assert type(response.replies[0]) is ReplySet
-    assert type(response.reply('MARVEL_CHARACTERS')) is ReplySet
+    eq_(type(response.replies), list)
+    eq_(type(response.replies[0]), ReplySet)
+    eq_(type(response.reply('MARVEL_CHARACTERS')), ReplySet)
     characters_reply = response.reply('MARVEL_CHARACTERS')
 
-    assert type(characters_reply.meta_bunch) is Bunch
-    assert type(characters_reply.contents) is list
-    assert type(characters_reply.contents[0]) is Content
-    assert type(characters_reply.content(uri='1009351')) is Content
+    eq_(type(characters_reply.meta_bunch), Bunch)
+    eq_(type(characters_reply.contents), list)
+    eq_(type(characters_reply.contents[0]), Content)
+    eq_(type(characters_reply.content(uri='1009351')), Content)
     content = characters_reply.content(uri='1009351')
 
-    assert type(characters_reply.pager) is Pager
-    assert type(characters_reply.facets) is list
-    assert type(characters_reply.facets[0]) is ReplySetFacet
-    assert type(characters_reply.facet('char_name')) is ReplySetFacet
+    eq_(type(characters_reply.pager), Pager)
+    eq_(type(characters_reply.facets), list)
+    eq_(type(characters_reply.facets[0]), ReplySetFacet)
+    eq_(type(characters_reply.facet('char_name')), ReplySetFacet)
     char_name_facet = characters_reply.facet('char_name')
 
-    assert type(char_name_facet.pager) is Pager
-    assert type(char_name_facet.nodes) is list
-    assert type(char_name_facet.nodes[0]) is ReplySetNode
-    assert type(char_name_facet.node('A-Bomb (HAS)')) is ReplySetNode
-    assert type(char_name_facet.labels) is Labels
-    assert type(char_name_facet.labels[0]) is Bunch
+    eq_(type(char_name_facet.pager), Pager)
+    eq_(type(char_name_facet.nodes), list)
+    eq_(type(char_name_facet.nodes[0]), ReplySetNode)
+    eq_(type(char_name_facet.node('A-Bomb (HAS)')), ReplySetNode)
+    eq_(type(char_name_facet.labels), Labels)
+    eq_(type(char_name_facet.labels[0]), Bunch)
     reply_set_node = char_name_facet.node('A-Bomb (HAS)')
 
-    assert isinstance(reply_set_node.key, (str, int))
-    assert type(reply_set_node.items) is int
-    assert type(reply_set_node.labels) is Labels
-    assert type(reply_set_node.labels[0]) is Bunch
+    ok_(isinstance(reply_set_node.key, (str, int)))
+    eq_(type(reply_set_node.items), int)
+    eq_(type(reply_set_node.labels), Labels)
+    eq_(type(reply_set_node.labels[0]), Bunch)
 
-    assert type(content.doc_id) is int
-    assert type(content.uri) is str
-    assert type(content.title) is HighlightTextList
-    assert type(content.title[0]) is HighlightText
-    assert type(content.title[0].is_match) is bool
-    assert type(str(content.title[0])) is str
-    assert type(content.abstract) is HighlightTextList
-    assert type(content.abstract[0]) is HighlightText
-    assert type(str(content.abstract[0])) is str
-    assert type(content.relevance) is Bunch
-    assert type(content.client_data) is list
-    assert type(content.client_data[0]) is Bunch
+    eq_(type(content.doc_id), int)
+    eq_(type(content.uri), str)
+    eq_(type(content.title), HighlightTextList)
+    eq_(type(content.title[0]), HighlightText)
+    eq_(type(content.title[0].is_match), bool)
+    eq_(type(str(content.title[0])), str)
+    eq_(type(content.abstract), HighlightTextList)
+    eq_(type(content.abstract[0]), HighlightText)
+    eq_(type(str(content.abstract[0])), str)
+    eq_(type(content.relevance), Bunch)
+    eq_(type(content.client_data), list)
+    eq_(type(content.client_data[0]), Bunch)
 
 
 def test_acp_types():
@@ -85,18 +87,18 @@ def test_acp_types():
         ('query', 'hul'),
     )))
 
-    assert type(response) is ACPResponse
-    assert type(response.replies_sets) is list
-    assert type(response.replies_sets[0]) is ACPReplySet
-    assert type(response.reply_set('name')) is ACPReplySet
+    eq_(type(response), ACPResponse)
+    eq_(type(response.replies_sets), list)
+    eq_(type(response.replies_sets[0]), ACPReplySet)
+    eq_(type(response.reply_set('name')), ACPReplySet)
     reply_set = response.reply_set('name')
 
-    assert type(reply_set.query) is str
-    assert type(reply_set.name) is str
-    assert type(reply_set.replies) is list
-    assert type(reply_set.replies[0]) is ACPReply
+    eq_(type(reply_set.query), str)
+    eq_(type(reply_set.name), str)
+    eq_(type(reply_set.replies), list)
+    eq_(type(reply_set.replies[0]), ACPReply)
     reply = reply_set.replies[0]
 
-    assert type(reply.label) is str
-    assert type(reply.options_bunch) is Bunch
-    assert type(reply.options_bunch.thumbnail) is str
+    eq_(type(reply.label), str)
+    eq_(type(reply.options_bunch), Bunch)
+    eq_(type(reply.options_bunch.thumbnail), str)

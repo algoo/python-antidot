@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from nose.tools import eq_
+from nose.tools import ok_
 from werkzeug.datastructures import MultiDict
 
 from pyantidot.request import ACPRequest
@@ -12,11 +14,11 @@ def test_acp_hulk():
     )))
 
     reply_set = response.reply_set('name')
-    assert reply_set.name == 'name'
-    assert reply_set.query == 'hul'
-    assert reply_set.replies
+    eq_(reply_set.name, 'name')
+    eq_(reply_set.query, 'hul')
+    ok_(reply_set.replies)
 
     reply = reply_set.replies[0]
-    assert reply.label == 'Hulk'
+    eq_(reply.label, 'Hulk')
     thumb_url = "http://i.annihil.us/u/prod/marvel/i/mg/5/a0/538615ca33ab0.jpg"
-    assert reply.options_bunch.thumbnail == thumb_url
+    eq_(reply.options_bunch.thumbnail, thumb_url)
