@@ -16,7 +16,11 @@ class Manager(object):
             service=service,
             status=status
         )
-        self._acp_request = ACPRequest(api_url, service=service)
+        self._acp_request = ACPRequest(
+            api_url,
+            service=service,
+            status=status
+        )
 
     @staticmethod
     def collect_query_parameters(parameters: MultiDict,
