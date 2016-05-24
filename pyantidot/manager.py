@@ -10,8 +10,12 @@ from pyantidot.response import SearchResponse
 
 
 class Manager(object):
-    def __init__(self, api_url: str, service: int):
-        self._search_request = SearchRequest(api_url, service=service)
+    def __init__(self, api_url: str, service: int, status: str='stable'):
+        self._search_request = SearchRequest(
+            api_url,
+            service=service,
+            status=status
+        )
         self._acp_request = ACPRequest(api_url, service=service)
 
     @staticmethod

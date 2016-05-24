@@ -13,9 +13,10 @@ class Request(object):
     _defaults = {}
     _forced = {}
 
-    def __init__(self, url, service):
+    def __init__(self, url, service, status: str='stable'):
         self._url = url
         self._service = service
+        self._status = status
 
     @property
     def service_address(self):
@@ -24,7 +25,8 @@ class Request(object):
     def get(self, parameters: MultiDict):
         parameters.update(self._defaults)
         parameters.update({
-            'service': self._service
+            'service': self._service,
+            'status': self._status
         })
         parameters.update(self._forced)
         parameters = [('afs:{0}'.format(key), value) for key, value in parameters.items(True)]
