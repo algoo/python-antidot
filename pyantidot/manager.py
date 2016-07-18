@@ -10,7 +10,13 @@ from pyantidot.response import SearchResponse
 
 
 class Manager(object):
-    def __init__(self, api_url: str, service: int, status: str='stable'):
+    def __init__(
+            self,
+            api_url: str,
+            service: int,
+            status: str='stable',
+            auto_wildcard: bool=False,
+    ):
         self._search_request = SearchRequest(
             api_url,
             service=service,
@@ -21,11 +27,17 @@ class Manager(object):
             service=service,
             status=status
         )
+        self._auto_wildcard = auto_wildcard
 
-    @staticmethod
-    def collect_query_parameters(parameters: MultiDict,
-                                 bind: dict = None) -> MultiDict:
-        builder = QueryParametersBuilder(bind)
+    def collect_query_parameters(
+            self,
+            parameters: MultiDict,
+            bind: dict=None,
+    ) -> MultiDict:
+        builder = QueryParametersBuilder(
+            bind,
+            auto_wildcard=self._auto_wildcard,
+        )
         return builder.build(parameters)
 
     def search(self, parameters: MultiDict = None, **kwargs) -> SearchResponse:
@@ -38,8 +50,9 @@ class Manager(object):
 
 
 class QueryParametersBuilder(object):
-    def __init__(self, bind: dict = None):
+    def __init__(self, bind: dict=None, auto_wildcard: bool=False):
         self._bind = bind or {'^query$': ('query', '{value}')}
+        self._auto_wildcard = auto_wildcard
 
     def build(self, parameters: MultiDict) -> MultiDict:
         query_parameters = MultiDict()
@@ -47,6 +60,13 @@ class QueryParametersBuilder(object):
         for convert_name, convert_value in self._get_bound_parameters(
                 parameters):
             query_parameters.add(convert_name, convert_value)
+
+        query = query_parameters.get('query')
+        if query and self._auto_wildcard:
+            terms = query.split(' ')
+            wildcards_terms = map(lambda term: '{0}*'.format(term), terms)
+            query = ' '.join(wildcards_terms)
+            query_parameters['query'] = query
 
         return query_parameters
 
