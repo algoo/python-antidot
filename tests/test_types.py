@@ -22,7 +22,7 @@ from pyantidot.tools import Bunch
 
 def test_search_types():
     # http://training-dev.afs-antidot.net/search?afs:service=2&afs:feed=MARVEL_CHARACTERS&afs:query=hulk
-    search = SearchRequest('https://training-dev.afs-antidot.net', service=2)
+    search = SearchRequest('http://training-dev.afs-antidot.net', service=2)
     response = search.get(MultiDict((
         ('feed', 'MARVEL_CHARACTERS'),
         ('query', 'hulk'),
@@ -82,7 +82,7 @@ def test_search_types():
 
 def test_acp_types():
     # http://training-dev.afs-antidot.net/acp?afs:service=2&afs:query=hul
-    acp = ACPRequest('https://training-dev.afs-antidot.net', service=2)
+    acp = ACPRequest('http://training-dev.afs-antidot.net', service=2)
     response = acp.get(MultiDict((
         ('query', 'hul'),
     )))

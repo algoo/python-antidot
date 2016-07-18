@@ -8,7 +8,7 @@ from pyantidot.request import ACPRequest
 
 def test_acp_hulk():
     # http://training-dev.afs-antidot.net/acp?afs:service=2&afs:query=hul
-    search = ACPRequest('https://training-dev.afs-antidot.net', service=2)
+    search = ACPRequest('http://training-dev.afs-antidot.net', service=2)
     response = search.get(MultiDict((
         ('query', 'hul'),
     )))

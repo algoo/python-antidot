@@ -6,7 +6,7 @@ from pyantidot.request import SearchRequest
 
 def test_search_hulk():
     # http://training-dev.afs-antidot.net/search?afs:service=2&afs:feed=MARVEL_CHARACTERS&afs:query=hulk
-    search = SearchRequest('https://training-dev.afs-antidot.net', service=2)
+    search = SearchRequest('http://training-dev.afs-antidot.net', service=2)
     response = search.get(MultiDict((
         ('feed', 'MARVEL_CHARACTERS'),
         ('query', 'hulk'),
