@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import re
 
 from werkzeug.datastructures import MultiDict
@@ -40,13 +41,13 @@ class Manager(object):
         )
         return builder.build(parameters)
 
-    def search(self, parameters: MultiDict = None, **kwargs) -> SearchResponse:
+    def search(self, parameters: MultiDict=None, **kwargs) -> SearchResponse:
         parameters.update(kwargs)
         response = self._search_request.get(parameters)
         logging.info('Antidot SEARCH Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
         return response
 
-    def acp(self, parameters: MultiDict = None, **kwargs) -> ACPResponse:
+    def acp(self, parameters: MultiDict=None, **kwargs) -> ACPResponse:
         parameters.update(kwargs)
         response = self._acp_request.get(parameters)
         logging.info('Antidot ACP Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
@@ -85,9 +86,9 @@ class QueryParametersBuilder(object):
                     # expression matches but no groups defined
                     if not matches.groups():
                         yield search_param_convert_name, \
-                              search_param_convert_value.format(
+                            search_param_convert_value.format(
                                 value=parameter_value
-                              )
+                            )
                     # expression matches with groups defined
                     # e.g. ^([a-zA-Z-_]+)_foo$
                     else:

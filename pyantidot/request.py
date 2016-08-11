@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import logging
 
 from urllib.parse import urlencode
@@ -31,9 +32,11 @@ class Request(object):
             'status': self._status
         })
         parameters.update(self._forced)
-        parameters = [('afs:{0}'.format(key), value) for key, value in parameters.items(True)]
+        param_list = []
+        for key, value in parameters.items(multi=True):
+            param_list.append(('afs:{0}'.format(key), value))
 
-        url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
+        url = '{0}?{1}'.format(self.service_address, urlencode(param_list))
 
         logging.info('Antidot request: {}'.format(url))
         response = requests.get(url)
@@ -48,9 +51,9 @@ class Request(object):
 class SearchRequest(Request):
     _response_class = SearchResponse
     _web_service_name = 'search'
-    _forced = {
+    _forced = {  # parameters forced on each antidot request
         'output': 'json',
-        'output_version': '3'  # see https://doc.antidot.net/#/reader/hBAQI4gcOjkYctUMnum4PQ/BvRmoZUPVBxJ1Dj4jx~4Cw
+        'output_version': '3'  # nopep8 see https://doc.antidot.net/#/reader/hBAQI4gcOjkYctUMnum4PQ/BvRmoZUPVBxJ1Dj4jx~4Cw
     }
 
 

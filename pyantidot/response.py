@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+import bs4
 from pyantidot.exception import NotFoundException
 from pyantidot.helpers import highlight
 from pyantidot.tools import Bunch
@@ -51,7 +54,7 @@ class HighlightText(BunchContainer):
 
     @property
     def is_truncate(self) -> bool:
-        return 'afs:t' in self._bunch and self._bunch['afs:t'] == 'KwicTruncate'
+        return ('afs:t' in self._bunch and self._bunch['afs:t'] == 'KwicTruncate')  # nopep8
 
     def __str__(self) -> str:
         if self.is_match:
@@ -80,11 +83,15 @@ class Content(BunchContainer):
 
     @property
     def title(self) -> HighlightTextList:
-        return HighlightTextList([HighlightText(bunch) for bunch in self._bunch.title])
+        return HighlightTextList(
+            [HighlightText(bunch) for bunch in self._bunch.title]
+        )
 
     @property
     def abstract(self) -> HighlightTextList:
-        return HighlightTextList([HighlightText(bunch) for bunch in self._bunch.abstract])
+        return HighlightTextList(
+            [HighlightText(bunch) for bunch in self._bunch.abstract]
+        )
 
     @property
     def relevance(self) -> Bunch:
@@ -97,7 +104,7 @@ class Content(BunchContainer):
     def cdata(self, id) -> str:
         """extract client data without afs tags"""
         for bunch in self.client_data:
-            if bunch.id==id:
+            if bunch.id == id:
                 return bs4.BeautifulSoup(bunch.contents).text
         return ''
 
@@ -120,7 +127,9 @@ class ReplySetNode(BunchContainer):
 
     @property
     def items(self) -> int:
-        return int(self._bunch['items'])  # We can't use self._bunch.items function here, Bunch.items is a function
+        return int(self._bunch['items'])
+        # We can't use self._bunch.items function here,
+        # because Bunch.items is a function
 
 
 class ReplySetFacet(BunchContainer):
@@ -285,12 +294,16 @@ class ACPReplySet(object):
     @property
     def replies(self) -> [ACPReply]:
         try:
+            replies = []
             for index, label in enumerate(self._bunch[1]):
                 data = Bunch()
                 if len(self._bunch) >= 3:
                     data = self._bunch[2][index]
 
-                yield ACPReply(index, label, self, data=data)
+                replies.append(ACPReply(index, label, self, data=data))
+
+            return replies
+
         except KeyError:
             return []
 
