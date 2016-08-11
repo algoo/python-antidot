@@ -169,6 +169,47 @@ class ReplySetFacet(BunchContainer):
                 return ReplySetNode(node_bunch)
         raise NotFoundException()
 
+class ReplySetMeta(BunchContainer):
+    @property
+    def uri(self) -> str:
+        return self._bunch.uri
+
+    @property
+    def total_items(self) -> int:
+        return self._bunch.totalItems
+
+    @property
+    def total_items_is_exact(self) -> bool:
+        return self._bunch.totalItemsIsExact
+
+    @property
+    def page_items(self) -> int:
+        return self._bunch.pageItems
+
+    @property
+    def first_page_item(self) -> int:
+        return self._bunch.firstPageItem
+
+    @property
+    def last_page_item(self) -> int:
+        return self._bunch.lastPageItem
+
+    @property
+    def duration_ms(self) -> int:
+        return self._bunch.durationMs
+
+    @property
+    def first_paf_id(self) -> int:
+        return self._bunch.firstPaFId
+
+    @property
+    def last_paf_id(self) -> int:
+        return self._bunch.lastPaFId
+
+    @property
+    def producer(self) -> int:
+        return self._bunch.producer
+
 
 class ReplySet(BunchContainer):
     @property
@@ -178,6 +219,10 @@ class ReplySet(BunchContainer):
     @property
     def meta_bunch(self) -> Bunch:
         return self._bunch.meta
+
+    @property
+    def meta(self) -> ReplySetMeta:
+        return ReplySetMeta(self._bunch.meta)
 
     @property
     def pager(self) -> Pager:
@@ -213,6 +258,32 @@ class ReplySet(BunchContainer):
         raise NotFoundException()
 
 
+class HeaderQuery(BunchContainer):
+    @property
+    def user_id(self):
+        return self._bunch.userId
+
+    @property
+    def text_query(self):
+        return self._bunch.textQuery
+
+    @property
+    def session_id(self):
+        return self._bunch.sessionId
+
+    @property
+    def date(self):
+        return self._bunch.date
+
+    @property
+    def main_context_bunch(self) -> Bunch:
+        return self._bunch.mainCtx
+
+    @property
+    def query_param_bunch(self) -> Bunch:
+        return self._bunch.queryParam
+
+
 class Header(BunchContainer):
     @property
     def query_bunch(self) -> Bunch:
@@ -229,6 +300,10 @@ class Header(BunchContainer):
     @property
     def info_bunch(self) -> Bunch:
         return self._bunch.info
+
+    @property
+    def query(self) -> HeaderQuery:
+        return HeaderQuery(self._bunch.query)
 
 
 class SearchResponse(BunchContainer):
