@@ -8,7 +8,7 @@ It is developed by [algoo](http://www.algoo.fr), a french company specialized in
 
 The software is used/tested with python 3.4 and 3.5
 
-## Tests ## 
+## Tests ##
 
 You can run the tests usign nose:
 
