@@ -42,11 +42,15 @@ class Manager(object):
 
     def search(self, parameters: MultiDict = None, **kwargs) -> SearchResponse:
         parameters.update(kwargs)
-        return self._search_request.get(parameters)
+        response = self._search_request.get(parameters)
+        logging.info('Antidot SEARCH Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
+        return response
 
     def acp(self, parameters: MultiDict = None, **kwargs) -> ACPResponse:
         parameters.update(kwargs)
-        return self._acp_request.get(parameters)
+        response = self._acp_request.get(parameters)
+        logging.info('Antidot ACP Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
+        return response
 
 
 class QueryParametersBuilder(object):

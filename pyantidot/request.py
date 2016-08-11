@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import logging
+
 from urllib.parse import urlencode
 import requests
 from werkzeug.datastructures import MultiDict
@@ -33,6 +35,7 @@ class Request(object):
 
         url = '{0}?{1}'.format(self.service_address, urlencode(parameters))
 
+        logging.info('Antidot request: {}'.format(url))
         response = requests.get(url)
         try:
             return self._response_class(Bunch(response.json()))
@@ -46,7 +49,8 @@ class SearchRequest(Request):
     _response_class = SearchResponse
     _web_service_name = 'search'
     _forced = {
-        'output': 'json,3'
+        'output': 'json',
+        'output_version': '3'  # see https://doc.antidot.net/#/reader/hBAQI4gcOjkYctUMnum4PQ/BvRmoZUPVBxJ1Dj4jx~4Cw
     }
 
 

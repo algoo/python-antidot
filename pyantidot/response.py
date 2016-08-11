@@ -1,5 +1,5 @@
 from pyantidot.exception import NotFoundException
-from pyantidot.helpers import high_light
+from pyantidot.helpers import highlight
 from pyantidot.tools import Bunch
 
 
@@ -32,8 +32,16 @@ class Pager(BunchContainer):
         return int(self._bunch.nextPage)
 
     @property
+    def previous_page(self):
+        return int(self._bunch.previousPage)
+
+    @property
     def pages(self) -> [int]:
         return self._bunch.page
+
+    @property
+    def page_nb(self) -> [int]:
+        return len(self._bunch.page)
 
 
 class HighlightText(BunchContainer):
@@ -58,7 +66,7 @@ class HighlightTextList(list):
         return ' '.join(map(str, self))
 
     def get_highlight_text(self, surround) -> str:
-        return high_light(self, surround)
+        return highlight(self, surround)
 
 
 class Content(BunchContainer):
@@ -85,6 +93,20 @@ class Content(BunchContainer):
     @property
     def client_data(self) -> [Bunch]:
         return [bunch for bunch in self._bunch.clientData]
+
+    def cdata(self, id) -> str:
+        """extract client data without afs tags"""
+        for bunch in self.client_data:
+            if bunch.id==id:
+                return bs4.BeautifulSoup(bunch.contents).text
+        return ''
+
+    def cdata_raw(self, id) -> str:
+        """extract client data with afs tags"""
+        for bunch in self.client_data:
+            if bunch.id == id:
+                return bunch.contents
+        return ''
 
 
 class ReplySetNode(BunchContainer):
@@ -223,10 +245,11 @@ class SearchResponse(BunchContainer):
 
 
 class ACPReply(object):
-    def __init__(self, index, label, reply_set):
+    def __init__(self, index, label, reply_set, data=None):
         self._index = index
         self._label = label
         self._reply_set = reply_set
+        self.data = data
 
     @property
     def label(self):
@@ -262,11 +285,12 @@ class ACPReplySet(object):
     @property
     def replies(self) -> [ACPReply]:
         try:
-            return [
-                ACPReply(index, label, self)
-                for index, label
-                in enumerate(self._bunch[1])
-            ]
+            for index, label in enumerate(self._bunch[1]):
+                data = Bunch()
+                if len(self._bunch) >= 3:
+                    data = self._bunch[2][index]
+
+                yield ACPReply(index, label, self, data=data)
         except KeyError:
             return []
 
