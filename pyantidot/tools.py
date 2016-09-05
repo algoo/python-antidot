@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from bunch import Bunch as BaseBunch
 
 

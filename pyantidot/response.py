@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
+import bs4
 from pyantidot.exception import NotFoundException
-from pyantidot.helpers import high_light
+from pyantidot.helpers import highlight
 from pyantidot.tools import Bunch
 
 
@@ -32,8 +35,16 @@ class Pager(BunchContainer):
         return int(self._bunch.nextPage)
 
     @property
+    def previous_page(self):
+        return int(self._bunch.previousPage)
+
+    @property
     def pages(self) -> [int]:
         return self._bunch.page
+
+    @property
+    def page_nb(self) -> [int]:
+        return len(self._bunch.page)
 
 
 class HighlightText(BunchContainer):
@@ -43,7 +54,7 @@ class HighlightText(BunchContainer):
 
     @property
     def is_truncate(self) -> bool:
-        return 'afs:t' in self._bunch and self._bunch['afs:t'] == 'KwicTruncate'
+        return ('afs:t' in self._bunch and self._bunch['afs:t'] == 'KwicTruncate')  # nopep8
 
     def __str__(self) -> str:
         if self.is_match:
@@ -58,7 +69,7 @@ class HighlightTextList(list):
         return ' '.join(map(str, self))
 
     def get_highlight_text(self, surround) -> str:
-        return high_light(self, surround)
+        return highlight(self, surround)
 
 
 class Content(BunchContainer):
@@ -72,11 +83,15 @@ class Content(BunchContainer):
 
     @property
     def title(self) -> HighlightTextList:
-        return HighlightTextList([HighlightText(bunch) for bunch in self._bunch.title])
+        return HighlightTextList(
+            [HighlightText(bunch) for bunch in self._bunch.title]
+        )
 
     @property
     def abstract(self) -> HighlightTextList:
-        return HighlightTextList([HighlightText(bunch) for bunch in self._bunch.abstract])
+        return HighlightTextList(
+            [HighlightText(bunch) for bunch in self._bunch.abstract]
+        )
 
     @property
     def relevance(self) -> Bunch:
@@ -85,6 +100,20 @@ class Content(BunchContainer):
     @property
     def client_data(self) -> [Bunch]:
         return [bunch for bunch in self._bunch.clientData]
+
+    def cdata(self, id) -> str:
+        """extract client data without afs tags"""
+        for bunch in self.client_data:
+            if bunch.id == id:
+                return bs4.BeautifulSoup(bunch.contents).text
+        return ''
+
+    def cdata_raw(self, id) -> str:
+        """extract client data with afs tags"""
+        for bunch in self.client_data:
+            if bunch.id == id:
+                return bunch.contents
+        return ''
 
 
 class ReplySetNode(BunchContainer):
@@ -98,7 +127,9 @@ class ReplySetNode(BunchContainer):
 
     @property
     def items(self) -> int:
-        return int(self._bunch['items'])  # We can't use self._bunch.items function here, Bunch.items is a function
+        return int(self._bunch['items'])
+        # We can't use self._bunch.items function here,
+        # because Bunch.items is a function
 
 
 class ReplySetFacet(BunchContainer):
@@ -138,6 +169,47 @@ class ReplySetFacet(BunchContainer):
                 return ReplySetNode(node_bunch)
         raise NotFoundException()
 
+class ReplySetMeta(BunchContainer):
+    @property
+    def uri(self) -> str:
+        return self._bunch.uri
+
+    @property
+    def total_items(self) -> int:
+        return self._bunch.totalItems
+
+    @property
+    def total_items_is_exact(self) -> bool:
+        return self._bunch.totalItemsIsExact
+
+    @property
+    def page_items(self) -> int:
+        return self._bunch.pageItems
+
+    @property
+    def first_page_item(self) -> int:
+        return self._bunch.firstPageItem
+
+    @property
+    def last_page_item(self) -> int:
+        return self._bunch.lastPageItem
+
+    @property
+    def duration_ms(self) -> int:
+        return self._bunch.durationMs
+
+    @property
+    def first_paf_id(self) -> int:
+        return self._bunch.firstPaFId
+
+    @property
+    def last_paf_id(self) -> int:
+        return self._bunch.lastPaFId
+
+    @property
+    def producer(self) -> int:
+        return self._bunch.producer
+
 
 class ReplySet(BunchContainer):
     @property
@@ -147,6 +219,10 @@ class ReplySet(BunchContainer):
     @property
     def meta_bunch(self) -> Bunch:
         return self._bunch.meta
+
+    @property
+    def meta(self) -> ReplySetMeta:
+        return ReplySetMeta(self._bunch.meta)
 
     @property
     def pager(self) -> Pager:
@@ -182,6 +258,32 @@ class ReplySet(BunchContainer):
         raise NotFoundException()
 
 
+class HeaderQuery(BunchContainer):
+    @property
+    def user_id(self):
+        return self._bunch.userId
+
+    @property
+    def text_query(self):
+        return self._bunch.textQuery
+
+    @property
+    def session_id(self):
+        return self._bunch.sessionId
+
+    @property
+    def date(self):
+        return self._bunch.date
+
+    @property
+    def main_context_bunch(self) -> Bunch:
+        return self._bunch.mainCtx
+
+    @property
+    def query_param_bunch(self) -> Bunch:
+        return self._bunch.queryParam
+
+
 class Header(BunchContainer):
     @property
     def query_bunch(self) -> Bunch:
@@ -198,6 +300,10 @@ class Header(BunchContainer):
     @property
     def info_bunch(self) -> Bunch:
         return self._bunch.info
+
+    @property
+    def query(self) -> HeaderQuery:
+        return HeaderQuery(self._bunch.query)
 
 
 class SearchResponse(BunchContainer):
@@ -223,10 +329,11 @@ class SearchResponse(BunchContainer):
 
 
 class ACPReply(object):
-    def __init__(self, index, label, reply_set):
+    def __init__(self, index, label, reply_set, data=None):
         self._index = index
         self._label = label
         self._reply_set = reply_set
+        self.data = data
 
     @property
     def label(self):
@@ -262,11 +369,16 @@ class ACPReplySet(object):
     @property
     def replies(self) -> [ACPReply]:
         try:
-            return [
-                ACPReply(index, label, self)
-                for index, label
-                in enumerate(self._bunch[1])
-            ]
+            replies = []
+            for index, label in enumerate(self._bunch[1]):
+                data = Bunch()
+                if len(self._bunch) >= 3:
+                    data = self._bunch[2][index]
+
+                replies.append(ACPReply(index, label, self, data=data))
+
+            return replies
+
         except KeyError:
             return []
 

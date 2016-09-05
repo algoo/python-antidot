@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from nose.tools import eq_
 from nose.tools import ok_
 from werkzeug.datastructures import MultiDict
