@@ -16,6 +16,7 @@ class Manager(object):
             service: int,
             status: str='stable',
             auto_wildcard: bool=False,
+            wildcard_pattern: str='{0}*',
     ):
         self._search_request = SearchRequest(
             api_url,
@@ -28,6 +29,7 @@ class Manager(object):
             status=status
         )
         self._auto_wildcard = auto_wildcard
+        self._wildcard_pattern = wildcard_pattern
 
     def collect_query_parameters(
             self,
@@ -37,6 +39,7 @@ class Manager(object):
         builder = QueryParametersBuilder(
             bind,
             auto_wildcard=self._auto_wildcard,
+            wildcard_pattern=self._wildcard_pattern,
         )
         return builder.build(parameters)
 
@@ -50,9 +53,15 @@ class Manager(object):
 
 
 class QueryParametersBuilder(object):
-    def __init__(self, bind: dict=None, auto_wildcard: bool=False):
+    def __init__(
+            self,
+            bind: dict=None,
+            auto_wildcard: bool=False,
+            wildcard_pattern: str='{0}*',
+    ):
         self._bind = bind or {'^query$': ('query', '{value}')}
         self._auto_wildcard = auto_wildcard
+        self._wildcard_pattern = wildcard_pattern
 
     def build(self, parameters: MultiDict) -> MultiDict:
         query_parameters = MultiDict()
@@ -64,7 +73,9 @@ class QueryParametersBuilder(object):
         query = query_parameters.get('query')
         if query and self._auto_wildcard:
             terms = query.split(' ')
-            wildcards_terms = map(lambda term: '{0}*'.format(term), terms)
+            wildcards_terms = map(
+                lambda term: self._wildcard_pattern.format(term), terms
+            )
             query = ' '.join(wildcards_terms)
             query_parameters['query'] = query
 
