@@ -123,6 +123,8 @@ class ReplySetNode(BunchContainer):
 
     @property
     def labels(self) -> Labels:
+        if 'labels' not in self._bunch:
+            return {}
         return Labels([label for label in self._bunch.labels])
 
     @property
