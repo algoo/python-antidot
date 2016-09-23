@@ -10,6 +10,9 @@ from pyantidot.response import SearchResponse, ACPResponse
 from pyantidot.tools import Bunch, NotImplementedAttribute
 
 
+logger = logging.getLogger('pyantidot.request')
+
+
 class Request(object):
     _web_service_name = NotImplementedAttribute
     _response_class = NotImplementedAttribute
@@ -37,8 +40,8 @@ class Request(object):
             param_list.append(('afs:{0}'.format(key), value))
 
         url = '{0}?{1}'.format(self.service_address, urlencode(param_list))
-
-        logging.info('Antidot request: {}'.format(url))
+        logger.info('Antidot request: {}'.format(url))
+        
         response = requests.get(url)
         try:
             return self._response_class(Bunch(response.json()))

@@ -11,6 +11,7 @@ from pyantidot.request import ACPRequest
 from pyantidot.request import ACPResponse
 from pyantidot.response import SearchResponse
 
+logger = logging.getLogger('pyantidot.manager')
 
 class Manager(object):
     def __init__(
@@ -49,13 +50,13 @@ class Manager(object):
     def search(self, parameters: MultiDict=None, **kwargs) -> SearchResponse:
         parameters.update(kwargs)
         response = self._search_request.get(parameters)
-        logging.info('Antidot SEARCH Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
+        logger.info('Antidot SEARCH Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
         return response
 
     def acp(self, parameters: MultiDict=None, **kwargs) -> ACPResponse:
         parameters.update(kwargs)
         response = self._acp_request.get(parameters)
-        logging.info('Antidot ACP Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
+        logger.info('Antidot ACP Response: {}'.format(json.dumps(response.get_raw())))  # nopep8
         return response
 
 
