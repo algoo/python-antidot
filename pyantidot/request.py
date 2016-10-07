@@ -11,6 +11,9 @@ from pyantidot.tools import Bunch, NotImplementedAttribute
 from pyantidot.response import DEFAULT_ACP_FEED_NAME
 
 
+logger = logging.getLogger('pyantidot.request')
+
+
 class Request(object):
     _web_service_name = NotImplementedAttribute
     _response_class = NotImplementedAttribute
@@ -38,8 +41,8 @@ class Request(object):
             param_list.append(('afs:{0}'.format(key), value))
 
         url = '{0}?{1}'.format(self.service_address, urlencode(param_list))
-
-        logging.info('Antidot request: {}'.format(url))
+        logger.info('Antidot request: {}'.format(url))
+        
         response = requests.get(url)
         object_response = response.json()
 
