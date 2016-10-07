@@ -4,7 +4,7 @@ import pyantidot
 
 setup(
     name='python-antidot',
-    version='0.2.3',
+    version='0.2.4',
     packages=find_packages(),
     install_requires=[
         'nose',

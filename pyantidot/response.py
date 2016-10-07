@@ -5,6 +5,8 @@ from pyantidot.exception import NotFoundException
 from pyantidot.helpers import highlight
 from pyantidot.tools import Bunch
 
+DEFAULT_ACP_FEED_NAME = '__DEFAULT__'
+
 
 class BunchContainer(object):
     def __init__(self, bunch: Bunch):
@@ -406,3 +408,7 @@ class ACPResponse(BunchContainer):
             raise NotFoundException()
 
         return ACPReplySet(name, Bunch([]))
+
+    @property
+    def is_default_reply_set(self):
+        return len(self._bunch) and DEFAULT_ACP_FEED_NAME in self._bunch

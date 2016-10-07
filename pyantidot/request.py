@@ -8,6 +8,7 @@ from werkzeug.datastructures import MultiDict
 
 from pyantidot.response import SearchResponse, ACPResponse
 from pyantidot.tools import Bunch, NotImplementedAttribute
+from pyantidot.response import DEFAULT_ACP_FEED_NAME
 
 
 class Request(object):
@@ -40,12 +41,14 @@ class Request(object):
 
         logging.info('Antidot request: {}'.format(url))
         response = requests.get(url)
-        try:
-            return self._response_class(Bunch(response.json()))
-        except ValueError:
-            # When json response is tiny (or ?) like '["hell",[]]' Bunch can't
-            # be construct
-            return self._response_class(Bunch({}))
+        object_response = response.json()
+
+        if isinstance(object_response, dict):
+            return self._response_class(Bunch(object_response))
+        elif isinstance(object_response, list):
+            return self._response_class(Bunch({
+                DEFAULT_ACP_FEED_NAME: object_response
+            }))
 
 
 class SearchRequest(Request):
