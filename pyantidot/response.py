@@ -154,6 +154,10 @@ class ReplySetFacet(BunchContainer):
         return [ReplySetNode(node) for node in self._bunch.node]
 
     @property
+    def intervals(self) -> [ReplySetNode]:
+        return [ReplySetNode(interval) for interval in self._bunch.interval]
+
+    @property
     def pager(self) -> Pager:
         if 'pager' not in self._bunch:
             return Pager(Bunch({
