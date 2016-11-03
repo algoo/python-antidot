@@ -30,12 +30,17 @@ class Request(object):
         return '{0}/{1}'.format(self._url, self._web_service_name)
 
     def get(self, parameters: MultiDict):
-        parameters.update(self._defaults)
-        parameters.update({
-            'service': self._service,
-            'status': self._status
-        })
-        parameters.update(self._forced)
+        # Prevent multikeys with for loop
+        for default_key, default_value in self._defaults.items():
+            parameters[default_key] = default_value
+
+        parameters['service'] = self._service
+        parameters['status'] = self._status
+
+        # Prevent multikeys with for loop
+        for forced_key, forced_value in self._forced.items():
+            parameters[forced_key] = forced_value
+
         param_list = []
         for key, value in parameters.items(multi=True):
             param_list.append(('afs:{0}'.format(key), value))
